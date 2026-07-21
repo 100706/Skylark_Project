@@ -209,34 +209,41 @@ def generate_explanation(
 
 
 def _fallback_explanation(metrics: dict, intent_type: str) -> str:
-    """Generate a basic explanation without the LLM."""
+    """Generate a basic explanation without the LLM, handling nested dictionaries."""
     parts = [f"Here are the {intent_type.replace('_', ' ')} metrics:\n"]
-    for key, value in metrics.items():
-        if key.endswith("_formatted") or key == "metric_cards":
-            continue
-        
-        label = key.replace("_", " ").title()
-        formatted_key = f"{key}_formatted"
-        
-        if formatted_key in metrics:
-            parts.append(f"• **{label}**: {metrics[formatted_key]}")
-        elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
-            parts.append(f"\n**Breakdown ({label}):**")
-            for item in value[:15]:
-                item_parts = []
-                for k, v in item.items():
-                    if k.endswith("_formatted") or k == "id": continue
-                    if f"{k}_formatted" in item:
-                        item_parts.append(f"{str(k).title()}: {item[f'{k}_formatted']}")
-                    else:
-                        item_parts.append(f"{str(k).title()}: {v}")
-                parts.append(" - " + ", ".join(item_parts))
-        elif isinstance(value, list):
-            if value:
-                parts.append(f"• **{label}**: {', '.join(str(v) for v in value)}")
-        elif isinstance(value, (int, float, str)) and not isinstance(value, bool):
-            parts.append(f"• **{label}**: {value}")
+    
+    def _parse_dict(d, depth=0):
+        prefix = "  " * depth
+        for key, value in d.items():
+            if key.endswith("_formatted") or key == "metric_cards":
+                continue
             
+            label = key.replace("_", " ").title()
+            formatted_key = f"{key}_formatted"
+            
+            if formatted_key in d:
+                parts.append(f"{prefix}• **{label}**: {d[formatted_key]}")
+            elif isinstance(value, dict):
+                parts.append(f"\n{prefix}**{label}**:")
+                _parse_dict(value, depth + 1)
+            elif isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
+                parts.append(f"\n{prefix}**Breakdown ({label}):**")
+                for item in value[:10]:
+                    item_parts = []
+                    for k, v in item.items():
+                        if k.endswith("_formatted") or k == "id": continue
+                        if f"{k}_formatted" in item:
+                            item_parts.append(f"{str(k).title()}: {item[f'{k}_formatted']}")
+                        else:
+                            item_parts.append(f"{str(k).title()}: {v}")
+                    parts.append(f"{prefix} - " + ", ".join(item_parts))
+            elif isinstance(value, list):
+                if value:
+                    parts.append(f"{prefix}• **{label}**: {', '.join(str(v) for v in value)}")
+            elif isinstance(value, (int, float, str)) and not isinstance(value, bool):
+                parts.append(f"{prefix}• **{label}**: {value}")
+
+    _parse_dict(metrics)
     return "\n".join(parts) if len(parts) > 1 else "I've computed the metrics, but couldn't generate a detailed explanation right now."
 
 

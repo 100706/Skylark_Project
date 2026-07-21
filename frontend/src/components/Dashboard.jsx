@@ -126,13 +126,13 @@ export default function Dashboard({ latestMetrics, latestIntent }) {
           <div className="quality-indicators">
             <div className="quality-badge">
               <span className="quality-score">
-                {dataQuality?.deals?.score || "—"}%
+                {dataQuality?.deals?.data_quality_score || "—"}%
               </span>
               <span className="quality-label">Deals Health</span>
             </div>
             <div className="quality-badge">
               <span className="quality-score">
-                {dataQuality?.work_orders?.score || "—"}%
+                {dataQuality?.work_orders?.data_quality_score || "—"}%
               </span>
               <span className="quality-label">Work Orders Health</span>
             </div>

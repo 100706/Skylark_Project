@@ -19,7 +19,7 @@ function App() {
             <path d="M2 17l10 5 10-5" />
             <path d="M2 12l10 5 10-5" />
           </svg>
-          <span className="nav-title">Monday.com BI Agent</span>
+          <span className="nav-title">Monday BI Agent</span>
         </div>
         <div className="nav-actions">
           <button className="logout-btn" onClick={() => setCurrentView("landing")}>

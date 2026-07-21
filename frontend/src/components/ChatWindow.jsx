@@ -14,14 +14,26 @@ const INITIAL_SUGGESTIONS = [
 ];
 
 export default function ChatWindow({ onMetricsUpdate }) {
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        "👋 Hi! I'm your Business Intelligence Agent. I can analyze your Monday.com data across **Work Orders** and **Deals** boards.\n\nAsk me anything about revenue, pipeline, delayed projects, billing, or request a full leadership summary.",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState(() => {
+    const saved = localStorage.getItem("skylark_chat");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return [
+      {
+        role: "assistant",
+        content:
+          "👋 Hi! I'm your Business Intelligence Agent. I can analyze your Monday data across **Work Orders** and **Deals** boards.\n\nAsk me anything about revenue, pipeline, delayed projects, billing, or request a full leadership summary.",
+        timestamp: new Date(),
+      },
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("skylark_chat", JSON.stringify(messages));
+  }, [messages]);
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState(INITIAL_SUGGESTIONS);
   const messagesEndRef = useRef(null);

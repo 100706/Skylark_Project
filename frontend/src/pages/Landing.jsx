@@ -10,11 +10,11 @@ export default function Landing({ onNavigate }) {
             <path d="M2 17l10 5 10-5" />
             <path d="M2 12l10 5 10-5" />
           </svg>
-          Monday.com BI Agent
+          Monday BI Agent
         </div>
         <h1 className="landing-title">Your Data,<br />Democratized.</h1>
         <p className="landing-subtitle">
-          Connect your Monday.com boards and chat directly with your pipeline, revenue, and work orders using natural language.
+          Connect your Monday boards and chat directly with your pipeline, revenue, and work orders using natural language.
         </p>
         <div className="landing-actions">
           <button className="primary-btn" onClick={() => onNavigate("app")}>
