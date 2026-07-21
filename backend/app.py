@@ -32,6 +32,7 @@ def create_app():
             "origins": [
                 "http://localhost:5173",   # Vite dev server
                 "http://localhost:3000",   # Fallback
+                "https://skylark-project-delta.vercel.app",  # Vercel production
                 os.getenv("FRONTEND_URL", ""),
             ],
             "methods": ["GET", "POST", "OPTIONS"],
